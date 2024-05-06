@@ -34,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="@string/username"
+        android:hint="@string/username"
         app:layout_constraintTop_toBottomOf="@id/imageRegister" />
 
     <EditText
@@ -42,7 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="@string/email"
+        android:hint="@string/email"
         app:layout_constraintTop_toBottomOf="@id/etUsername" />
 
     <EditText
@@ -50,7 +50,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="@string/password"
+        android:hint="@string/password"
         app:layout_constraintTop_toBottomOf="@id/etEmail" />
 
     <EditText
@@ -58,7 +58,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="@string/confirm_password"
+
+        android:hint="@string/confirm_password"
         app:layout_constraintTop_toBottomOf="@id/etPassword" />
 
     <com.google.android.material.button.MaterialButton

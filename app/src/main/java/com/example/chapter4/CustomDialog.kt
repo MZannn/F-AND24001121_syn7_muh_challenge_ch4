@@ -49,14 +49,15 @@ class CustomDialog(var title: String?, var content: String?, var id: Int?) : Dia
     private fun addNote() {
         val title = binding.etJudul.text.toString()
         val content = binding.etCatatan.text.toString()
-        var note = Notes(title = title, content = content)
+        var note = Notes(title = title, content = content, userId = 1)
         viewModel.insert(note)
     }
 
     private fun updateNote(id: Int) {
         val title = binding.etJudul.text.toString()
         val content = binding.etCatatan.text.toString()
-        var note = Notes(title = title, content = content)
+        val id = 1
+        var note = Notes(title = title, content = content, userId = id)
         viewModel.update(note.title, note.content, id)
     }
 

@@ -5,8 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.example.chapter4.ViewModelFactory
 import com.example.chapter4.databinding.FragmentRegisterBinding
+import com.example.chapter4.model.User
+import com.example.chapter4.viewModel.AuthViewModel
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -23,6 +28,10 @@ class RegisterFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var binding: FragmentRegisterBinding
+    private val viewModel: AuthViewModel by activityViewModels {
+        ViewModelFactory.getInstance(requireContext())
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -39,7 +48,35 @@ class RegisterFragment : Fragment() {
         binding = FragmentRegisterBinding.inflate(layoutInflater, container, false)
         val navController = findNavController()
         binding.btnRegister.setOnClickListener {
-            navController.popBackStack()
+
+            val user = User(
+                email = binding.etEmail.text.toString(),
+                username = binding.etUsername.text.toString(),
+                password = binding.etPassword.text.toString()
+            )
+            var confirmPasswordIsSame =
+                binding.etPassword.text.toString() == binding.etConfirmPassword.text.toString()
+            if (binding.etUsername.text.toString().isNotEmpty() && binding.etEmail.text.toString()
+                    .isNotEmpty() && binding.etPassword.text.toString()
+                    .isNotEmpty() && confirmPasswordIsSame
+            ) {
+                var checkUser = viewModel.register(user)
+                if (checkUser != null) {
+                    navController.popBackStack()
+                } else {
+                    Toast.makeText(requireContext(), "$checkUser", Toast.LENGTH_SHORT).show()
+                }
+            } else if (!confirmPasswordIsSame) {
+                Toast.makeText(
+                    requireContext(),
+                    "Password and Confirm Password is not same",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                Toast.makeText(requireContext(), "Please fill all the fields", Toast.LENGTH_SHORT)
+                    .show()
+            }
+
         }
         return binding.root
     }

@@ -11,5 +11,7 @@ data class Notes(
     @ColumnInfo(name = "note_title")
     val title: String,
     @ColumnInfo(name = "content")
-    val content: String
+    val content: String,
+    @ColumnInfo(name = "user_id")
+    val userId: Int
 )

@@ -9,11 +9,7 @@ class NoteViewModel(val noteDao: NoteDao) : ViewModel() {
     private val _notes: MutableLiveData<List<Notes>> = MutableLiveData()
     val notes get() = _notes
 
-    fun addNote(notes: Notes) {
-        noteDao.insert(notes)
-    }
-
-    fun getAllNotes() = noteDao.getAllNotes()
+    fun getAllNotes(id: Int) = noteDao.getAllNotes(id)
 
     fun update(title: String, content: String, id: Int) {
         noteDao.update(title, content, id)

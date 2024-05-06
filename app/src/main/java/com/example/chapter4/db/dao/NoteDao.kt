@@ -12,8 +12,8 @@ interface NoteDao {
     @Insert
     fun insert(notes: Notes)
 
-    @Query("SELECT * FROM notes ORDER BY id DESC")
-    fun getAllNotes(): LiveData<List<Notes>>
+    @Query("SELECT * FROM notes WHERE user_id = :id ORDER BY id DESC")
+    fun getAllNotes(id:Int): LiveData<List<Notes>>
 
     @Query("UPDATE notes SET note_title = :title, content = :content WHERE id = :id")
     fun update(title: String, content: String, id: Int)

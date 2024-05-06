@@ -1,13 +1,22 @@
 package com.example.chapter4.view
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.content.SharedPreferences
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import com.example.chapter4.ViewModelFactory
 import com.example.chapter4.databinding.FragmentLoginBinding
+import com.example.chapter4.model.User
+import com.example.chapter4.viewModel.AuthViewModel
+import com.example.simpleviewmodelapp.SharedPreference
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -24,6 +33,10 @@ class LoginFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var binding: FragmentLoginBinding
+    private val viewModel: AuthViewModel by activityViewModels {
+        ViewModelFactory.getInstance(requireContext())
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -36,6 +49,10 @@ class LoginFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+//        Log.e("SIMPLE_SHARED_PREF", SharedPreference.isLogin.toString())
+        viewModel.getAllUsers().observe(viewLifecycleOwner) {
+            Log.d("LoginFragment", "onCreateView: $it")
+        }
         binding = FragmentLoginBinding.inflate(layoutInflater, container, false)
         val navController = findNavController()
         binding.tvNotHaveAccount.setOnClickListener {
@@ -43,15 +60,37 @@ class LoginFragment : Fragment() {
             navController.navigate(action)
         }
         binding.btnLogin.setOnClickListener {
-            val action = LoginFragmentDirections.actionLoginFragmentToHomeFragment()
-            navController.navigate(
-                action,
-                NavOptions.Builder().setPopUpTo(binding.root.id, true, saveState = true).build()
-            )
+
+            if (binding.etEmail.text.toString()
+                    .isNotEmpty() && binding.etPassword.text.toString().isNotEmpty()
+            ) {
+                var checkLogin: User =
+                    login(binding.etEmail.text.toString(), binding.etPassword.text.toString())
+                if (checkLogin != null) {
+                    var bundle = Bundle()
+                    bundle.putSerializable("user", "$checkLogin")
+                    val action = LoginFragmentDirections.actionLoginFragmentToHomeFragment()
+                    var intent = Intent(requireContext(), HomeFragment::class.java)
+                    intent.putExtra("user", bundle)
+                    Log.d("LoginFragment", "onCreateView: $checkLogin")
+
+                    navController.navigate(
+                        action,
+                        NavOptions.Builder().setPopUpTo(binding.root.id, true, saveState = true)
+                            .build()
+                    )
+                } else {
+                    Toast.makeText(requireContext(), "Login Failed", Toast.LENGTH_SHORT).show()
+                }
+            }
+
 
         }
-        // Inflate the layout for this fragment
         return binding.root
+    }
+
+    private fun login(email: String, password: String): User {
+        return viewModel.login(email, password)
     }
 
     companion object {

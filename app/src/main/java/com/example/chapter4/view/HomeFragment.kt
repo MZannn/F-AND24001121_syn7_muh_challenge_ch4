@@ -1,11 +1,13 @@
 package com.example.chapter4.view
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chapter4.CustomDialog
 import com.example.chapter4.ViewModelFactory
@@ -13,6 +15,8 @@ import com.example.chapter4.adapter.NotesAdapter
 import com.example.chapter4.databinding.CustomDialogBinding
 import com.example.chapter4.databinding.FragmentHomeBinding
 import com.example.chapter4.model.Notes
+import com.example.chapter4.model.User
+import com.example.chapter4.viewModel.AuthViewModel
 import com.example.chapter4.viewModel.NoteViewModel
 
 // TODO: Rename parameter arguments, choose names that match
@@ -31,7 +35,10 @@ class HomeFragment : Fragment() {
     private var param2: String? = null
     private lateinit var binding: FragmentHomeBinding
 
-    private val viewModel: NoteViewModel by activityViewModels {
+    private val noteViewModel: NoteViewModel by activityViewModels {
+        ViewModelFactory.getInstance(requireContext())
+    }
+    private val authViewModel: AuthViewModel by activityViewModels {
         ViewModelFactory.getInstance(requireContext())
     }
 
@@ -47,6 +54,8 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        var data = arguments?.getSerializable("user")
+        Log.d("HomeFragment", "onCreateView: $data")
         binding = FragmentHomeBinding.inflate(layoutInflater, container, false)
         val dialogBinding = CustomDialogBinding.inflate(layoutInflater)
         val recyclerView = binding.rvNotes
@@ -59,27 +68,31 @@ class HomeFragment : Fragment() {
         dialogBinding.btnInput.setOnClickListener(View.OnClickListener {
             val notes = Notes(
                 title = dialogBinding.etJudul.text.toString(),
-                content = dialogBinding.etCatatan.text.toString()
+                content = dialogBinding.etCatatan.text.toString(),
+                userId = (data as User).id!!
             )
-            viewModel.insert(notes)
+            noteViewModel.insert(notes)
         })
-        viewModel.getAllNotes().observe(viewLifecycleOwner) { notes ->
+        noteViewModel.getAllNotes(id!!).observe(viewLifecycleOwner) { notes ->
             val adapter = NotesAdapter(notes, { item ->
                 val dialog =
                     CustomDialog(title = item.title, content = item.content, id = item.id!!)
                 dialog.show(requireActivity().supportFragmentManager, "CustomDialog")
             }, { item ->
-                viewModel.delete(item)
+                noteViewModel.delete(item)
             })
 
             recyclerView.layoutManager = LinearLayoutManager(context)
             recyclerView.adapter = adapter
         }
+        binding.logout.setOnClickListener {
+            findNavController().popBackStack()
+
+        }
         return binding.root
     }
-    fun test(list: List<Notes>){
-        for (item in list){
-            println(item)
-        }
+
+    fun getUser(id: Int): User {
+        return authViewModel.getUserById(id)
     }
 }
