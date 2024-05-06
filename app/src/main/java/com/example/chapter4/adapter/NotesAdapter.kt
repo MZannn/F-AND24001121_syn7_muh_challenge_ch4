@@ -13,7 +13,7 @@ import com.example.chapter4.R
 import com.example.chapter4.model.Notes
 
 class NotesAdapter(
-    private val list: List<Notes>,
+    private var list: List<Notes>,
     private val onEditClick: (Notes) -> Unit,
     private val onDeleteClick: (Notes) -> Unit
 ) :
@@ -46,5 +46,10 @@ class NotesAdapter(
 
     override fun getItemCount(): Int {
         return list.size
+    }
+
+    fun updateData(newList: List<Notes>) {
+        list = newList
+        notifyDataSetChanged()
     }
 }

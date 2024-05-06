@@ -1,4 +1,4 @@
-package com.example.simpleviewmodelapp
+package com.example.chapter4
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -9,7 +9,8 @@ object SharedPreference {
     private const val PREFS_NAME = "PREFS_NAME"
 
     const val ISLOGIN = "IS_LOGIN"
-    fun init(context: Context){
+    const val USERID = "USER_ID"
+    fun init(context: Context) {
         sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
     }
 
@@ -21,5 +22,11 @@ object SharedPreference {
         }
         get() = sharedPreferences.getBoolean(ISLOGIN, false)
 
-
+    var userId: Int
+        set(value) {
+            sharedPreferences.edit {
+                putInt(USERID, value)
+            }
+        }
+        get() = sharedPreferences.getInt(USERID, 0)
 }

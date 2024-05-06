@@ -1,6 +1,7 @@
 package com.example.chapter4
 
 import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
@@ -17,6 +18,11 @@ class CustomDialog(var title: String?, var content: String?, var id: Int?) : Dia
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val sharedPreferences = requireActivity().applicationContext.getSharedPreferences(
+            "PREFS_NAME",
+            Context.MODE_PRIVATE
+        )
+        var userId = sharedPreferences.getInt(SharedPreference.USERID, 0)
         binding = CustomDialogBinding.inflate(layoutInflater)
         val builder = AlertDialog.Builder(requireActivity())
         if (title != null) {
@@ -56,7 +62,6 @@ class CustomDialog(var title: String?, var content: String?, var id: Int?) : Dia
     private fun updateNote(id: Int) {
         val title = binding.etJudul.text.toString()
         val content = binding.etCatatan.text.toString()
-        val id = 1
         var note = Notes(title = title, content = content, userId = id)
         viewModel.update(note.title, note.content, id)
     }
