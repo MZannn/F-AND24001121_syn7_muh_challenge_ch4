@@ -18,11 +18,8 @@ class CustomDialog(var title: String?, var content: String?, var id: Int?) : Dia
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val sharedPreferences = requireActivity().applicationContext.getSharedPreferences(
-            "PREFS_NAME",
-            Context.MODE_PRIVATE
-        )
-        var userId = sharedPreferences.getInt(SharedPreference.USERID, 0)
+        val sharedPreferences = SharedPreference
+        var userId = sharedPreferences.userId
         binding = CustomDialogBinding.inflate(layoutInflater)
         val builder = AlertDialog.Builder(requireActivity())
         if (title != null) {
@@ -39,7 +36,7 @@ class CustomDialog(var title: String?, var content: String?, var id: Int?) : Dia
             }
         } else {
             binding.btnInput.setOnClickListener {
-                addNote()
+                addNote(userId)
                 dismiss()
             }
         }
@@ -52,10 +49,10 @@ class CustomDialog(var title: String?, var content: String?, var id: Int?) : Dia
         this.listener = listener
     }
 
-    private fun addNote() {
+    private fun addNote(userId: Int) {
         val title = binding.etJudul.text.toString()
         val content = binding.etCatatan.text.toString()
-        var note = Notes(title = title, content = content, userId = 1)
+        var note = Notes(title = title, content = content, userId = userId)
         viewModel.insert(note)
     }
 
