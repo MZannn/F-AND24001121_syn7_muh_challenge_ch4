@@ -53,11 +53,8 @@ class LoginFragment : Fragment() {
         viewModel.getAllUsers().observe(viewLifecycleOwner) {
             Log.d("LoginFragment", "onCreateView: $it")
         }
-        val sharedPreferences = requireActivity().applicationContext.getSharedPreferences(
-            "PREFS_NAME",
-            Context.MODE_PRIVATE
-        )
-        var isLogin = sharedPreferences.getBoolean(SharedPreference.ISLOGIN, false)
+        val sharedPreferences = SharedPreference
+        var isLogin = sharedPreferences.isLogin
         if (isLogin) {
             val action = LoginFragmentDirections.actionLoginFragmentToHomeFragment()
             findNavController().navigate(action)
@@ -82,8 +79,8 @@ class LoginFragment : Fragment() {
                     var intent = Intent(requireContext(), HomeFragment::class.java)
                     intent.putExtra("user", bundle)
                     Log.d("LoginFragment", "onCreateView: $checkLogin")
-                    sharedPreferences.edit { putBoolean(SharedPreference.ISLOGIN, true) }
-                    sharedPreferences.edit { putInt(SharedPreference.USERID, checkLogin.id!!) }
+                    sharedPreferences.isLogin = true
+                    sharedPreferences.userId = checkLogin.id!!
                     navController.navigate(
                         action
                     )

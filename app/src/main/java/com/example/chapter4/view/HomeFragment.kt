@@ -59,17 +59,14 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(layoutInflater, container, false)
         val dialogBinding = CustomDialogBinding.inflate(layoutInflater)
         val recyclerView = binding.rvNotes
-        val sharedPreferences = requireActivity().applicationContext.getSharedPreferences(
-            "PREFS_NAME",
-            Context.MODE_PRIVATE
-        )
-        var userId = sharedPreferences.getInt(SharedPreference.USERID, 0)
+        var sharedPreferences = SharedPreference
+        var userId = sharedPreferences.userId
         var user = getUser(userId)
         binding.welcomeUsername.text = "Welcome, ${user.username}"
         binding.tvLogout.setOnClickListener {
+            sharedPreferences.clear()
             val action = HomeFragmentDirections.actionHomeFragmentToLoginFragment()
             findNavController().navigate(action)
-            sharedPreferences.all.clear()
         }
         binding.fabAdd.setOnClickListener(View.OnClickListener {
             val dialog = CustomDialog(null, null, null)

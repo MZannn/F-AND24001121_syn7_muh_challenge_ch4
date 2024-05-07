@@ -29,4 +29,10 @@ object SharedPreference {
             }
         }
         get() = sharedPreferences.getInt(USERID, 0)
+
+    fun clear() {
+        sharedPreferences.edit {
+            clear()
+        }
+    }
 }
